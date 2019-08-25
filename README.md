@@ -1,4 +1,4 @@
-# blackjack
+# Blackjack
 
 ## Project setup
 ```
