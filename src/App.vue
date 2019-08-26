@@ -2,7 +2,7 @@
     <div class="container">
         <h1 class="title">Blackjack</h1>
         <div class="field is-grouped">
-            <p class="control">
+            <p class="control" v-if="turn == 0">
                 <button class="button is-info" @click="deal">
                     <span class="icon">
                         <cards-icon />
@@ -10,7 +10,7 @@
                     <span>Deal</span>
                 </button>
             </p>
-            <p class="control">
+            <p class="control" v-if="turn == 1">
                 <button class="button is-success" @click="dealCardToPlayer">
                     <span class="icon">
                         <hand-pointing-up-icon />
@@ -18,15 +18,15 @@
                     <span>Hit</span>
                 </button>
             </p>
-            <p class="control">
-                <button class="button is-warning">
+            <p class="control" v-if="turn == 1">
+                <button class="button is-warning" @click="stay">
                     <span class="icon">
                         <hand-right-icon />
                     </span>
                     <span>Stay</span>
                 </button>
             </p>
-            <p class="control">
+            <p class="control" v-if="turn != 0">
                 <button class="button is-danger" @click="resetGame">
                     <span class="icon">
                         <exit-run-icon />
@@ -36,75 +36,52 @@
             </p>
         </div>
         <hr>
-        <div class="content">
-            <h2 class="subtitle">Dealer's Hand</h2>
-            <div class="columns is-multiline is-mobile">
-                <div class="column is-3" v-for="(card, index) in dealerHand" :key="index">
-                    <div class="card">
-                        <div class="card-content has-text-centered">
-                            <span class="title">{{ card.value }}</span>
-                            <span v-if="card.suit == 'spades'" class="title"><cards-spade-icon /></span>
-                            <span v-if="card.suit == 'hearts'" class="title has-text-danger"><cards-heart-icon /></span>
-                            <span v-if="card.suit == 'clubs'" class="title"><cards-club-icon /></span>
-                            <span v-if="card.suit == 'diamonds'" class="title has-text-danger"><cards-diamond-icon /></span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div>{{ dealerHand }}</div>
-            <div>Dealer Total: {{ dealerHandTotal }}</div>
+        <div class="content notification is-info" v-if="gameState != '' && turn > 1">
+            {{ gameState }}
         </div>
-        <hr>
-        <div>
-            <h2 class="subtitle">Player's Hand:</h2>
+        <div class="content">
+            <h2 class="subtitle">Your Hand:</h2>
             <div class="columns is-multiline is-mobile">
-                <div class="column is-3" v-for="(card, index) in playerHand" :key="index">
-                    <div class="card">
-                        <div class="card-content has-text-centered">
-                            <span class="title">{{ card.value }}</span>
-                            <span v-if="card.suit == 'spades'" class="title"><cards-spade-icon /></span>
-                            <span v-if="card.suit == 'hearts'" class="title has-text-danger"><cards-heart-icon /></span>
-                            <span v-if="card.suit == 'clubs'" class="title"><cards-club-icon /></span>
-                            <span v-if="card.suit == 'diamonds'" class="title has-text-danger"><cards-diamond-icon /></span>
-                        </div>
-                    </div>
-                </div>
+                <Card :card="card" v-for="(card, index) in playerHand" :key="index" />
             </div>
             <div>{{ playerHand }}</div>
             <div>Player Total: {{ playerHandTotal }}</div>
+        </div>
+        <div class="content" v-if="turn > 1">
+            <h2 class="subtitle">Dealer's Hand</h2>
+            <div class="columns is-multiline is-mobile">
+                <Card :card="card" v-for="(card, index) in dealerHand" :key="index" />
+            </div>
+            <div>{{ dealerHand }}</div>
+            <div>Dealer Total: {{ dealerHandTotal }}</div>
         </div>
     </div>
 </template>
 
 <script>
 import deck from './deck'
-import CardsIcon from 'vue-material-design-icons/Cards.vue';
-import HandRightIcon from 'vue-material-design-icons/HandRight.vue';
-import HandPointingUpIcon from 'vue-material-design-icons/HandPointingUp.vue';
-import ExitRunIcon from 'vue-material-design-icons/ExitRun.vue';
-import CardsClubIcon from 'vue-material-design-icons/CardsClub.vue';
-import CardsSpadeIcon from 'vue-material-design-icons/CardsSpade.vue';
-import CardsHeartIcon from 'vue-material-design-icons/CardsHeart.vue';
-import CardsDiamondIcon from 'vue-material-design-icons/CardsDiamond.vue';
+import Card from './components/Card'
+import CardsIcon from 'vue-material-design-icons/Cards.vue'
+import HandRightIcon from 'vue-material-design-icons/HandRight.vue'
+import HandPointingUpIcon from 'vue-material-design-icons/HandPointingUp.vue'
+import ExitRunIcon from 'vue-material-design-icons/ExitRun.vue'
 
 export default {
     name: 'app',
     components: {
+        Card,
         CardsIcon,
         HandRightIcon,
         HandPointingUpIcon,
         ExitRunIcon,
-        CardsClubIcon,
-        CardsSpadeIcon,
-        CardsHeartIcon,
-        CardsDiamondIcon
     },
     data() {
         return {
             deck: deck,
+            turn: 0,
             gameDeck: [],
             playerHand: [],
-            dealerHand: []
+            dealerHand: [],
         }
     },
     methods: {
@@ -117,7 +94,10 @@ export default {
             }
         },
         deal() {
-            this.resetGame()            
+            this.resetGame()     
+            
+            this.turn = 1
+            
             this.shuffle()
             this.dealCardToPlayer()
             this.dealCardToPlayer()
@@ -135,13 +115,29 @@ export default {
             this.gameDeck.splice(draw, 1)
         },
         stay() {
-
+            this.turn = 2
+            while (this.dealerHandTotal < 16) {
+                this.dealCardToDealer()
+            } 
         },
         resetGame() {
+            this.turn = 0
             this.gameDeck = Object.assign([], this.deck)
             this.playerHand = []
             this.dealerHand = []
         }
+    },
+    watch: {
+        playerHandTotal: function(total) {
+            if (total >= 21) {
+                this.turn = 2
+            }
+        },
+        dealerHandTotal: function(total) {
+            if (total >= 21) {
+                this.turn = 3
+            }
+        },
     },
     computed: {
         playerHandTotal: function() {
@@ -181,8 +177,44 @@ export default {
                 total += value
             }
             return total
-        }
+        },
+        gameState: function() {
+            if (this.playerHandTotal == this.dealerHandTotal) {
+                // Tie game
+                return "Tie game!"
+            }
+            if (this.playerHandTotal == 21 && this.playerHand.length == 2) {
+                // Player blackjack
+                return "Blackjack! You win!"
+            }
+            if (this.dealerHandTotal == 21 && this.dealerHand.length == 2) {
+                // Dealer blackjack
+                return "Dealer Blackjack! You lose!"
+            }
+            if (this.playerHandTotal > 21) {
+                // Player bust
+                return "Sorry, you bust!"
+            }
+            if (this.dealerHandTotal > 21) {
+                // Dealer bust
+                return "Dealer bust! You win!"
+            }
+            if (this.playerHandTotal <= 21 && this.playerHandTotal > this.dealerHandTotal) {
+                // Player wins
+                return "You win!"
+            }
+            if (this.dealerHandTotal <= 21 && this.dealerHandTotal > this.playerHandTotal) {
+                // Dealer wins
+                return "Sorry, you lost!"
+            }
+            return ''
+        },
     }
 }
 </script>
 
+<style lang="css">
+    .container {
+        margin: 1.5rem !important;
+    }
+</style>
