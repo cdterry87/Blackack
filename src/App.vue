@@ -6,12 +6,14 @@
         <hr>
         <div>
             <h2>Player's Hand:</h2>
-            {{ playerHand }}
+            <div>{{ playerHand }}</div>
+            <div>{{ playerHandTotal }}</div>
         </div>
         <hr>
         <div>
             <h2>Dealer's Hand</h2>
-            {{ dealerHand }}
+            <div>{{ dealerHand }}</div>
+            <div>{{ dealerHandTotal }}</div>
         </div>
     </div>
 </template>
@@ -65,6 +67,46 @@ export default {
             this.dealerHand = []
         }
     },
+    computed: {
+        playerHandTotal: function() {
+            let value = 0
+            let total = 0
+            for( let card in this.playerHand ){
+                value = this.playerHand[card].value
+
+                if (value == "K" || value == "Q" || value == "J") {
+                    value = 10
+                }
+
+                if (value == "A") {
+                    value = 11
+                }
+
+                value = parseInt(value)
+                total += value
+            }
+            return total
+        },
+        dealerHandTotal: function() {
+            let value = 0
+            let total = 0
+            for( let card in this.dealerHand ){
+                value = this.dealerHand[card].value
+
+                if (value == "K" || value == "Q" || value == "J") {
+                    value = 10
+                }
+
+                if (value == "A") {
+                    value = 11
+                }
+
+                value = parseInt(value)
+                total += value
+            }
+            return total
+        }
+    }
 }
 </script>
 
