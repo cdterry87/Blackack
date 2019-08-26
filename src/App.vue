@@ -44,7 +44,7 @@
             <div class="columns is-multiline is-mobile">
                 <Card :card="card" v-for="(card, index) in playerHand" :key="index" />
             </div>
-            <div>{{ playerHand }}</div>
+            <div v-if="debug">{{ playerHand }}</div>
             <div>Player Total: {{ playerHandTotal }}</div>
         </div>
         <div class="content" v-if="turn > 1">
@@ -52,7 +52,7 @@
             <div class="columns is-multiline is-mobile">
                 <Card :card="card" v-for="(card, index) in dealerHand" :key="index" />
             </div>
-            <div>{{ dealerHand }}</div>
+            <div v-if="debug">{{ dealerHand }}</div>
             <div>Dealer Total: {{ dealerHandTotal }}</div>
         </div>
     </div>
@@ -77,6 +77,7 @@ export default {
     },
     data() {
         return {
+            debug: false,
             deck: deck,
             turn: 0,
             gameDeck: [],
