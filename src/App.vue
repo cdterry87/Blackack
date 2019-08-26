@@ -19,7 +19,7 @@
                 </button>
             </p>
             <p class="control" v-if="turn == 1">
-                <button class="button is-warning" @click="stay">
+                <button class="button is-link" @click="stay">
                     <span class="icon">
                         <hand-right-icon />
                     </span>

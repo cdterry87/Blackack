@@ -1,5 +1,5 @@
 <template>
-    <div class="column is-3">
+    <div class="column is-one-quarter-desktop is-half-mobile">
         <div class="card">
             <div class="card-content has-text-centered title">
                 <span>{{ card.value }}</span>
