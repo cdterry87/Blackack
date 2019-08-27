@@ -48,7 +48,7 @@
             <div>Player Total: {{ playerHandTotal }}</div>
         </div>
         <div class="content" v-if="turn > 1">
-            <h2 class="subtitle">Dealer's Hand</h2>
+            <h2 class="subtitle">Dealer's Hand:</h2>
             <div class="columns is-multiline is-mobile">
                 <Card :card="card" v-for="(card, index) in dealerHand" :key="index" />
             </div>
@@ -144,20 +144,39 @@ export default {
         playerHandTotal: function() {
             let value = 0
             let total = 0
-            for( let card in this.playerHand ){
+            let aces = []
+            
+            for (let card in this.playerHand) {
                 value = this.playerHand[card].value
 
-                if (value == "K" || value == "Q" || value == "J") {
-                    value = 10
-                }
+                if (value != "A") {
+                    if (value == "K" || value == "Q" || value == "J") {
+                        value = 10
+                    }
 
-                if (value == "A") {
-                    value = 11
+                    value = parseInt(value)
+                    total += value
+                } else {
+                    aces.push(this.playerHand[card])
                 }
-
-                value = parseInt(value)
-                total += value
             }
+
+            for (let ace in aces) {
+                value = aces[ace].value
+
+                if (total + 11 > 21) {
+                    total += 1
+                } else if ((total + 11) === 21) {
+                    if (aces.length > 1) {
+                        total += 1
+                    } else {
+                        total += 11
+                    }
+                } else {
+                    total += 11
+                }
+            }
+
             return total
         },
         dealerHandTotal: function() {
