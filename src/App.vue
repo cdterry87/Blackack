@@ -39,21 +39,21 @@
         <div class="content notification is-info" v-if="gameState != '' && turn > 1">
             {{ gameState }}
         </div>
-        <div class="content">
+        <div class="content" v-if="turn > 0">
             <h2 class="subtitle">Your Hand:</h2>
             <div class="columns is-multiline is-mobile">
-                <Card :card="card" v-for="(card, index) in playerHand" :key="index" />
+                <Card :card="card" v-for="(card, index) in playerHand" :key="index" :turn="turn" />
             </div>
             <div v-if="debug">{{ playerHand }}</div>
             <div>Player Total: {{ playerHandTotal }}</div>
         </div>
-        <div class="content" v-if="turn > 1">
+        <div class="content" v-if="turn > 0">
             <h2 class="subtitle">Dealer's Hand:</h2>
             <div class="columns is-multiline is-mobile">
-                <Card :card="card" v-for="(card, index) in dealerHand" :key="index" />
+                <Card :card="card" v-for="(card, index) in dealerHand" :key="index" :hidden="card.hidden" :turn="turn" />
             </div>
             <div v-if="debug">{{ dealerHand }}</div>
-            <div>Dealer Total: {{ dealerHandTotal }}</div>
+            <div v-if="turn > 1">Dealer Total: {{ dealerHandTotal }}</div>
         </div>
     </div>
 </template>
@@ -100,18 +100,20 @@ export default {
             this.turn = 1
             
             this.shuffle()
-            this.dealCardToPlayer()
-            this.dealCardToPlayer()
-            this.dealCardToDealer()
-            this.dealCardToDealer()
+            this.dealCardToPlayer(false)
+            this.dealCardToPlayer(false)
+            this.dealCardToDealer(true)
+            this.dealCardToDealer(false)
         },
         dealCardToPlayer() {
             let draw = Math.floor(Math.random() * this.gameDeck.length)
             this.playerHand.push(this.gameDeck[draw])
             this.gameDeck.splice(draw, 1)
         },
-        dealCardToDealer() {
+        dealCardToDealer(hidden) {
             let draw = Math.floor(Math.random() * this.gameDeck.length)
+            let card = this.gameDeck[draw]
+            card['hidden'] = hidden
             this.dealerHand.push(this.gameDeck[draw])
             this.gameDeck.splice(draw, 1)
         },

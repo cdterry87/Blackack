@@ -1,7 +1,10 @@
 <template>
     <div class="column is-one-quarter-desktop is-half-mobile">
         <div class="card">
-            <div class="card-content has-text-centered title">
+            <div class="card-content has-text-centered title" v-if="hidden && turn < 2">
+                ?
+            </div>
+            <div class="card-content has-text-centered title" v-else>
                 <span>{{ card.value }}</span>
                 <span v-if="card.suit == 'spades'"><cards-spade-icon /></span>
                 <span v-if="card.suit == 'hearts'" class="has-text-danger"><cards-heart-icon /></span>
@@ -20,7 +23,7 @@
 
     export default {
         name: 'Card',
-        props: ['card'],
+        props: ['card', 'hidden', 'turn'],
         components: {
             CardsClubIcon,
             CardsSpadeIcon,
