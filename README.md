@@ -1,5 +1,7 @@
 # Blackjack
 
+> NOTE: This version was created with Vue 2 and archived in 2023. A newer version has been created in React.
+
 ## Project setup
 ```
 npm install
