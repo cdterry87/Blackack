@@ -10,10 +10,14 @@ function App() {
     setIsPlaying(true);
   }
 
+  const endGame = () => {
+    setIsPlaying(false);
+  }
+
   return (
     <>
-      <Start isPlaying={isPlaying} onClick={startGame} />
-      <Board isPlaying={isPlaying} />
+      <Start isPlaying={isPlaying} startGame={startGame} />
+      <Board isPlaying={isPlaying} endGame={endGame} />
     </>
   );
 }
