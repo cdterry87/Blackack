@@ -3,7 +3,7 @@ import Controls from './Controls'
 import Dealer from './Dealer'
 import Player from './Player'
 
-function Board({ isPlaying, endGame }) {
+function Game({ isPlaying, endGame }) {
   const hit = () => {
     console.log('hit')
   }
@@ -15,7 +15,7 @@ function Board({ isPlaying, endGame }) {
   return !isPlaying ? null : (
     <>
       <div className='h-screen bg-green-900'>
-        <div className='h-full flex flex-col gap-16 items-center justify-center'>
+        <div className='p-4 w-full h-full flex flex-col gap-16 items-center justify-center'>
           <Dealer />
           <Player />
           <Controls hit={hit} stay={stay} exit={endGame} />
@@ -25,4 +25,4 @@ function Board({ isPlaying, endGame }) {
   )
 }
 
-export default Board
+export default Game

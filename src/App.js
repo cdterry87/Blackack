@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 
-import Board from './components/Board';
+import Game from './components/Game';
 import Start from './components/Start';
 
 function App() {
@@ -17,7 +17,7 @@ function App() {
   return (
     <>
       <Start isPlaying={isPlaying} startGame={startGame} />
-      <Board isPlaying={isPlaying} endGame={endGame} />
+      <Game isPlaying={isPlaying} endGame={endGame} />
     </>
   );
 }
