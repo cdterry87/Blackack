@@ -4,8 +4,8 @@ import Diamond from './icons/Diamond'
 import Heart from './icons/Heart'
 import Spade from './icons/Spade'
 
-function Card({ card }) {
-  const { suit, value, isFaceDown } = card
+function Card({ card, isFaceDown }) {
+  const { suit, value } = card
 
   return (
     <>

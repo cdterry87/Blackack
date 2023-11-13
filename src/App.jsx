@@ -1,8 +1,8 @@
 import React, { useState } from 'react'
 
-import Game from './components/Game'
+import Table from './components/Table'
 import Start from './components/Start'
-import deck from './services/deck'
+import deck from './data/deck.json'
 
 import AOS from 'aos'
 import 'aos/dist/aos.css'
@@ -11,76 +11,68 @@ function App() {
   AOS.init()
 
   const [isPlaying, setIsPlaying] = useState(false)
-  const [gameDeck, setGameDeck] = useState([...deck])
-  const [dealerHand, setDealerHand] = useState([])
   const [playerHand, setPlayerHand] = useState([])
+  const [dealerHand, setDealerHand] = useState([])
+  const [gameDeck, setGameDeck] = useState([])
+
+  let tempGameDeck = [...deck]
 
   const shuffle = () => {
-    for (let i = 0; i < gameDeck.length - 1; i++) {
-      let j = i + Math.floor(Math.random() * (gameDeck.length - i))
-      let temp = gameDeck[j]
-      gameDeck[j] = gameDeck[i]
-      gameDeck[i] = temp
+    for (let i = 0; i < tempGameDeck.length - 1; i++) {
+      let j = i + Math.floor(Math.random() * (tempGameDeck.length - i))
+      let temp = tempGameDeck[j]
+      tempGameDeck[j] = tempGameDeck[i]
+      tempGameDeck[i] = temp
     }
 
-    setGameDeck(gameDeck => [...gameDeck])
-    console.log('shuffled gameDeck', gameDeck)
+    console.log('shuffled tempGameDeck', tempGameDeck)
   }
 
   const dealCardToPlayer = () => {
     // Draw a random card from the game deck
-    let draw = Math.floor(Math.random() * gameDeck.length)
+    let draw = Math.floor(Math.random() * tempGameDeck.length)
 
-    console.log('deal card to player', gameDeck[draw])
+    console.log('deal card to player', tempGameDeck[draw])
 
     // Add the card to the player's hand
-    setPlayerHand(playerHand => [...playerHand, gameDeck[draw]])
+    setPlayerHand(playerHand => [...playerHand, tempGameDeck[draw]])
 
     // Remove the card from the game deck
-    setGameDeck(gameDeck => [
-      ...gameDeck.filter((card, index) => index !== draw)
-    ])
+    tempGameDeck = [...tempGameDeck.filter((card, index) => index !== draw)]
   }
 
-  const dealCardToDealer = (isFaceDown = false) => {
+  const dealCardToDealer = () => {
     // Draw a random card from the game deck
-    let draw = Math.floor(Math.random() * gameDeck.length)
+    let draw = Math.floor(Math.random() * tempGameDeck.length)
 
-    console.log('deal card to dealer', gameDeck[draw])
-
-    // Set the card to be face down if it's the dealer's first card
-    if (isFaceDown) {
-      gameDeck[draw].isFaceDown = true
-    }
+    console.log('deal card to dealer', tempGameDeck[draw])
 
     // Add the card to the dealer's hand
-    setDealerHand(dealerHand => [...dealerHand, gameDeck[draw]])
+    setDealerHand(dealerHand => [...dealerHand, tempGameDeck[draw]])
 
     // Remove the card from the game deck
-    setGameDeck(gameDeck => [
-      ...gameDeck.filter((card, index) => index !== draw)
-    ])
+    tempGameDeck = [...tempGameDeck.filter((card, index) => index !== draw)]
   }
 
   const startGame = () => {
     console.log('startGame')
     setIsPlaying(true)
     shuffle()
-    dealCardToPlayer(false)
-    console.log('gameDeck after deal', gameDeck)
-    dealCardToDealer(true)
-    console.log('gameDeck after deal', gameDeck)
-    dealCardToPlayer(false)
-    console.log('gameDeck after deal', gameDeck)
-    dealCardToDealer(false)
-    console.log('gameDeck after deal', gameDeck)
+    dealCardToPlayer()
+    dealCardToDealer()
+    dealCardToPlayer()
+    dealCardToDealer()
+
+    setGameDeck(tempGameDeck)
   }
 
   const resetGame = () => {
     console.log('resetGame', deck)
-    setGameDeck([...deck])
+    tempGameDeck = [...deck]
     setPlayerHand([])
     setDealerHand([])
+
+    setGameDeck(tempGameDeck)
   }
 
   const endGame = () => {
@@ -92,7 +84,7 @@ function App() {
   return (
     <>
       <Start isPlaying={isPlaying} startGame={startGame} />
-      <Game
+      <Table
         isPlaying={isPlaying}
         dealCardToDealer={dealCardToDealer}
         dealCardToPlayer={dealCardToPlayer}

@@ -1,8 +1,8 @@
 import React from 'react'
 import Card from './Card'
 
-function Player({ playerHand, gameDeck }) {
-  const total = playerHand.reduce((total, card) => {
+function Player({ hand }) {
+  const total = hand.reduce((total, card) => {
     if (card.value === 'A') {
       return total > 10 ? total + 1 : total + 11
     } else if (card.value === 'J' || card.value === 'Q' || card.value === 'K') {
@@ -18,12 +18,14 @@ function Player({ playerHand, gameDeck }) {
         <div className='flex flex-col gap-4 text-center'>
           <h1 className='text-lg md:text-3xl text-white font-bold'>Player</h1>
           <div className='flex flex-row gap-4'>
-            {playerHand.map((card, index) => (
+            {hand.map((card, index) => (
               <div
                 key={index}
                 data-aos='fade-down'
                 data-aos-duration='600'
-                data-aos-delay={(index + 1 * (index + 1)) * 250}
+                data-aos-delay={
+                  index < 2 ? (index + 1 * (index + 1)) * 250 : 250
+                }
                 data-aos-once='true'
               >
                 <Card card={card} className='flex flex-col gap-2' />
