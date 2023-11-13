@@ -1,4 +1,4 @@
-[
+const deck = [
     {
         "suit": "hearts",
         "value": 2
@@ -208,3 +208,5 @@
         "value": "A"
     }
 ]
+
+export default deck;
