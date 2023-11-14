@@ -13,10 +13,35 @@ function Table({
 }) {
   if (!isPlaying) return null
 
+  let dealerTotal = dealerHand.reduce((total, card) => {
+    if (card.value === 'A') {
+      return total > 10 ? total + 1 : total + 11
+    } else if (card.value === 'J' || card.value === 'Q' || card.value === 'K') {
+      return total + 10
+    } else {
+      return total + parseInt(card.value)
+    }
+  }, 0)
+
+  let playerTotal = playerHand.reduce((total, card) => {
+    if (card.value === 'A') {
+      return total > 10 ? total + 1 : total + 11
+    } else if (card.value === 'J' || card.value === 'Q' || card.value === 'K') {
+      return total + 10
+    } else {
+      return total + parseInt(card.value)
+    }
+  }, 0)
+
+  /**
+   * NOTE: The stay function is not running the dealCardToDealer function
+   * properly to update the dealer's hand.
+   */
   const stay = () => {
-    // TODO: Move the "total" calculation for dealer and player to this component.
-    // Then while the dealer's total is less than 17, deal cards to the dealer.
-    dealCardToDealer()
+    console.log('stay', dealerTotal)
+    while (dealerTotal < 17) {
+      dealCardToDealer()
+    }
   }
 
   const exit = () => {
@@ -25,13 +50,11 @@ function Table({
 
   return (
     <>
-      <div className='min-h-screen bg-green-900'>
-        <div className='p-4 w-full h-full flex flex-col gap-6 items-center justify-center'>
-          <Dealer isPlaying={isPlaying} hand={dealerHand} />
-          <hr className='w-1/2 border-2 border-green-800' />
-          <Player hand={playerHand} />
-          <Controls hit={dealCardToPlayer} stay={stay} exit={exit} />
-        </div>
+      <div className='flex flex-col gap-6 items-center justify-center'>
+        <Dealer hand={dealerHand} total={dealerTotal} />
+        <hr className='w-1/2 border-2 border-green-800' />
+        <Player hand={playerHand} total={playerTotal} />
+        <Controls hit={dealCardToPlayer} stay={stay} exit={exit} />
       </div>
     </>
   )

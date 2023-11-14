@@ -1,19 +1,7 @@
 import React from 'react'
 import Card from './Card'
 
-function Dealer({ isPlaying, hand }) {
-  const total = hand.reduce((total, card) => {
-    if (isPlaying) return '??'
-
-    if (card.value === 'A') {
-      return total > 10 ? total + 1 : total + 11
-    } else if (card.value === 'J' || card.value === 'Q' || card.value === 'K') {
-      return total + 10
-    } else {
-      return total + parseInt(card.value)
-    }
-  }, 0)
-
+function Dealer({ hand, total, isGameOver }) {
   return (
     <>
       <div className='w-full flex flex-col items-center gap-4'>
@@ -40,7 +28,7 @@ function Dealer({ isPlaying, hand }) {
           </div>
           <div className='flex items-center justify-center text-xs'>
             <div className='px-4 py-2 bg-gray-950 text-white rounded-lg shadow-md'>
-              Total: {total}
+              Total: {isGameOver ? total : '??'}
             </div>
           </div>
         </div>

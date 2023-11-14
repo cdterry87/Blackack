@@ -1,17 +1,7 @@
 import React from 'react'
 import Card from './Card'
 
-function Player({ hand }) {
-  const total = hand.reduce((total, card) => {
-    if (card.value === 'A') {
-      return total > 10 ? total + 1 : total + 11
-    } else if (card.value === 'J' || card.value === 'Q' || card.value === 'K') {
-      return total + 10
-    } else {
-      return total + parseInt(card.value)
-    }
-  }, 0)
-
+function Player({ hand, total }) {
   return (
     <>
       <div className='w-full flex flex-col items-center gap-4'>
