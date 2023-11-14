@@ -1,8 +1,7 @@
-import React from 'react'
-import Club from './icons/Club'
-import Diamond from './icons/Diamond'
-import Heart from './icons/Heart'
-import Spade from './icons/Spade'
+import Club from 'icons/Club'
+import Diamond from 'icons/Diamond'
+import Heart from 'icons/Heart'
+import Spade from 'icons/Spade'
 
 function Card({ card, isFaceDown }) {
   const { suit, value } = card

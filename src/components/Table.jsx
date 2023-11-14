@@ -1,18 +1,16 @@
-import React from 'react'
-import Controls from './Controls'
-import Dealer from './Dealer'
-import Player from './Player'
+import { useEffect } from 'react'
+import Controls from 'components/Controls'
+import Dealer from 'components/Dealer'
+import Player from 'components/Player'
 
 function Table({
-  isPlaying,
   endGame,
   playerHand,
   dealerHand,
   dealCardToDealer,
-  dealCardToPlayer
+  dealCardToPlayer,
+  determineWinner
 }) {
-  if (!isPlaying) return null
-
   let dealerTotal = dealerHand.reduce((total, card) => {
     if (card.value === 'A') {
       return total > 10 ? total + 1 : total + 11
@@ -33,20 +31,13 @@ function Table({
     }
   }, 0)
 
-  /**
-   * NOTE: The stay function is not running the dealCardToDealer function
-   * properly to update the dealer's hand.
-   */
   const stay = () => {
     console.log('stay', dealerTotal)
-    while (dealerTotal < 17) {
-      dealCardToDealer()
-    }
   }
 
-  const exit = () => {
-    endGame()
-  }
+  useEffect(() => {
+    determineWinner()
+  }, [playerTotal, dealerTotal, determineWinner])
 
   return (
     <>
@@ -54,7 +45,7 @@ function Table({
         <Dealer hand={dealerHand} total={dealerTotal} />
         <hr className='w-1/2 border-2 border-green-800' />
         <Player hand={playerHand} total={playerTotal} />
-        <Controls hit={dealCardToPlayer} stay={stay} exit={exit} />
+        <Controls hit={dealCardToPlayer} stay={stay} exit={endGame} />
       </div>
     </>
   )
