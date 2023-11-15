@@ -83,15 +83,29 @@ function App() {
     setPlayerHandTotal(tempHandTotal)
   }
 
-  const dealCardToDealer = () => {
+  const dealCardsToDealer = () => {
     let tempGameDeck = [...gameDeck]
     let tempDealerHand = [...dealerHand]
-
-    // Add the first card to dealer's hand
-    tempDealerHand.push(tempGameDeck[0])
-
-    // Calculate the dealer's hand total
     let tempHandTotal = calculateHandTotal(tempDealerHand)
+    let dealerHitCount = 0
+
+    // Player is finished with their turn
+    setIsPlayerFinished(true)
+
+    // Dealer must hit until they reach 17, so keep dealing the first card
+    // and removing it from the deck until the dealer's hand total is 17 or greater
+    while (tempHandTotal < 17) {
+      // This should never happen, but in order to prevent an infinite loop break out if
+      // the dealer hits more than 10 times since this shouldn't be possible without busting
+      if (dealerHitCount > 10) break
+
+      tempDealerHand.push(tempGameDeck[0])
+      tempGameDeck = [...tempGameDeck.filter((card, index) => index !== 0)]
+      tempHandTotal = calculateHandTotal(tempDealerHand)
+
+      // Counts the number of times the dealer hits
+      dealerHitCount++
+    }
 
     // Set state
     setDealerHand(tempDealerHand)
@@ -192,9 +206,8 @@ function App() {
               dealerHand={dealerHand}
               playerHandTotal={playerHandTotal}
               dealerHandTotal={dealerHandTotal}
-              dealCardToDealer={dealCardToDealer}
+              dealCardsToDealer={dealCardsToDealer}
               dealCardToPlayer={dealCardToPlayer}
-              setIsPlayerFinished={setIsPlayerFinished}
               endGame={endGame}
               isWinner={isWinner}
               statusMessage={statusMessage}
