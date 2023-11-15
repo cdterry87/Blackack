@@ -9,7 +9,7 @@ function Card({ card, isFaceDown }) {
   return (
     <>
       <div>
-        <div className='bg-white rounded-lg flex flex-col gap-4 items-center justify-center w-16 h-24 md:w-24 md:h-32'>
+        <div className='bg-white rounded-lg flex flex-col gap-2 md:gap-4 items-center justify-center w-16 h-24 md:w-24 md:h-32'>
           {isFaceDown && (
             <div className='h-full w-full bg-blue-900 rounded-lg border-4 border-white'></div>
           )}

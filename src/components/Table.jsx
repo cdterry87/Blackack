@@ -1,6 +1,7 @@
 import Controls from 'components/Controls'
 import Dealer from 'components/Dealer'
 import Player from 'components/Player'
+import GameOver from 'components/GameOver'
 
 function Table({
   endGame,
@@ -10,7 +11,10 @@ function Table({
   dealerHandTotal,
   dealCardToDealer,
   dealCardToPlayer,
-  setIsPlayerFinished
+  setIsPlayerFinished,
+  isGameOver,
+  isWinner,
+  statusMessage
 }) {
   const hit = () => {
     console.log('hit')
@@ -24,11 +28,18 @@ function Table({
 
   return (
     <>
-      <div className='flex flex-col gap-6 items-center justify-center'>
+      <div className='w-full flex flex-col gap-6 items-center justify-center'>
         <Dealer hand={dealerHand} total={dealerHandTotal} />
-        <hr className='w-1/2 border-2 border-green-800' />
+        <hr className='w-1/2 sm:w-full border-2 border-green-800 rounded-full' />
         <Player hand={playerHand} total={playerHandTotal} />
-        <Controls hit={hit} stay={stay} exit={endGame} />
+        {!isGameOver && <Controls hit={hit} stay={stay} exit={endGame} />}
+        {isGameOver && (
+          <GameOver
+            isWinner={isWinner}
+            statusMessage={statusMessage}
+            endGame={endGame}
+          />
+        )}
       </div>
     </>
   )

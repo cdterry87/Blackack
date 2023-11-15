@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react'
 
 import Table from 'components/Table'
 import Welcome from 'components/Welcome'
-import GameOver from 'components/GameOver'
 import deck from 'data/deck.json'
 
 import AOS from 'aos'
@@ -10,12 +9,6 @@ import 'aos/dist/aos.css'
 
 function App() {
   AOS.init() // Initialize Animations
-
-  /**
-   * TODO: The GameOver component shouldn't replace the table component.
-   * Right now when GameOver pops up it hides all the cards on the table
-   * but it would be nice to see everything, including the dealer's cards.
-   */
 
   const [isGameStarted, setIsGameStarted] = useState(false)
   const [isPlayerFinished, setIsPlayerFinished] = useState(false)
@@ -137,45 +130,46 @@ function App() {
 
   useEffect(() => {
     if (playerHandTotal && dealerHandTotal) {
-      // Check for blackjack
+      // Check for automatic game ending conditions
       if (playerHandTotal === 21 && playerHand.length === 2) {
         // Player blackjack
         setIsWinner(true)
         setIsGameOver(true)
-        setStatusMessage('Blackjack! You win!')
+        setStatusMessage('PLAYER BLACKJACK!')
       } else if (playerHandTotal > 21) {
         // Player bust
         setIsWinner(false)
         setIsGameOver(true)
-        setStatusMessage('Sorry, you bust!')
+        setStatusMessage('PLAYER BUST!')
+      } else if (dealerHandTotal === 21 && dealerHand.length === 2) {
+        // Dealer blackjack
+        setIsWinner(false)
+        setIsGameOver(true)
+        setStatusMessage('DEALER BLACKJACK!')
       }
 
+      // Check for manual game ending conditions when player stays
       if (isPlayerFinished) {
         if (playerHandTotal <= 21 && playerHandTotal === dealerHandTotal) {
           // Tie game
           setIsWinner(false)
           setIsGameOver(true)
-          setStatusMessage('Tie game!')
-        } else if (dealerHandTotal === 21 && dealerHand.length === 2) {
-          // Dealer blackjack
-          setIsWinner(false)
-          setIsGameOver(true)
-          setStatusMessage('Dealer Blackjack! You lose!')
+          setStatusMessage('TIE GAME!')
         } else if (dealerHandTotal > 21) {
           // Dealer bust
           setIsWinner(true)
           setIsGameOver(true)
-          setStatusMessage('Dealer bust! You win!')
-        } else if (playerHandTotal === 21) {
+          setStatusMessage('DEALER BUST!')
+        } else if (playerHandTotal <= 21 && playerHandTotal > dealerHandTotal) {
           // Player wins
           setIsWinner(true)
           setIsGameOver(true)
-          setStatusMessage('You win!')
+          setStatusMessage('PLAYER WINS!')
         } else if (dealerHandTotal <= 21 && dealerHandTotal > playerHandTotal) {
           // Dealer wins
           setIsWinner(false)
           setIsGameOver(true)
-          setStatusMessage('Sorry, you lost!')
+          setStatusMessage('DEALER WINS!')
         }
       }
     }
@@ -191,8 +185,8 @@ function App() {
     <>
       <div className='min-h-screen bg-green-900 flex items-center justify-center'>
         <div className='w-full sm:w-auto p-4 h-full'>
-          {!isGameStarted && !isGameOver && <Welcome deal={shuffleAndDeal} />}
-          {isGameStarted && !isGameOver && (
+          {!isGameStarted && <Welcome deal={shuffleAndDeal} />}
+          {isGameStarted && (
             <Table
               playerHand={playerHand}
               dealerHand={dealerHand}
@@ -202,13 +196,9 @@ function App() {
               dealCardToPlayer={dealCardToPlayer}
               setIsPlayerFinished={setIsPlayerFinished}
               endGame={endGame}
-            />
-          )}
-          {isGameOver && (
-            <GameOver
               isWinner={isWinner}
               statusMessage={statusMessage}
-              endGame={endGame}
+              isGameOver={isGameOver}
             />
           )}
         </div>

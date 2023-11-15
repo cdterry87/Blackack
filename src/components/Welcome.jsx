@@ -16,7 +16,6 @@ function Welcome({ deal }) {
             Welcome to <br />
             React Blackjack!
           </h1>
-          <hr />
           <button
             className='px-4 py-2 uppercase bg-green-900 text-white font-bold rounded-lg shadow-md hover:bg-green-950 transition duration-200 ease-in-out'
             onClick={deal}

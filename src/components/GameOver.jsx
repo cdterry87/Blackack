@@ -1,31 +1,21 @@
-import Smile from 'icons/Smile'
-import Frown from 'icons/Frown'
-
 function GameOver({ isWinner, statusMessage, endGame }) {
   return (
     <>
-      <div
-        className='bg-white p-12 border border-gray-300 shadow-xl rounded-xl'
-        data-aos='fade-down'
-        data-aos-delay='300'
-        data-aos-duration='600'
-        data-aos-once='true'
-      >
-        <div className='flex flex-col items-center gap-4'>
-          {isWinner && <Smile classes='w-32 h-32 text-green-900' />}
-          {!isWinner && <Frown classes='w-32 h-32 text-green-900' />}
-          <h1 className='text-2xl sm:text-3xl text-center font-bold text-green-900'>
-            {isWinner ? 'Congratulations!' : 'Better luck next time!'}
-          </h1>
-          <h2 className='text-base sm:text-lg text-center font-semibold text-gray-800'>
-            {statusMessage}
-          </h2>
-          <hr />
+      <div className='w-1/2 md:w-full'>
+        <div className='w-full flex flex-col md:flex-row items-center justify-between md:justify-center gap-4 md:gap-8 p-3 bg-white rounded-lg'>
+          <div className='text-sm flex flex-col text-center md:text-left'>
+            <strong className='text-lg text-green-900 font-bold uppercase'>
+              {statusMessage}
+            </strong>
+            <span>
+              {isWinner ? 'Congratulations!' : 'Better luck next time!'}
+            </span>
+          </div>
           <button
-            className='px-4 py-2 uppercase bg-green-900 text-white font-bold rounded-lg shadow-md hover:bg-green-950 transition duration-200 ease-in-out'
+            className='uppercase bg-gray-900 text-white px-4 py-2 rounded-md hover:bg-gray-950 transition duration-200 ease-in-out'
             onClick={endGame}
           >
-            Retry
+            End Game
           </button>
         </div>
       </div>

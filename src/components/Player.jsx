@@ -5,8 +5,13 @@ function Player({ hand, total }) {
     <>
       <div className='w-full flex flex-col items-center gap-4'>
         <div className='flex flex-col gap-4 text-center'>
-          <h1 className='text-lg md:text-3xl text-white font-bold'>Player</h1>
-          <div className='flex flex-row gap-4'>
+          <div className='flex items-center justify-center gap-6 md:gap-8'>
+            <h1 className='text-lg md:text-3xl text-white font-bold'>Player</h1>
+            <div className='text-xs md:text-sm px-2 md:px-4 py-2 bg-gray-950 text-white rounded-lg shadow-md'>
+              Total: {total}
+            </div>
+          </div>
+          <div className='flex flex-row gap-4 flex-wrap'>
             {hand.map((card, index) => (
               <div
                 key={index}
@@ -20,11 +25,6 @@ function Player({ hand, total }) {
                 <Card card={card} className='flex flex-col gap-2' />
               </div>
             ))}
-          </div>
-          <div className='flex items-center justify-center text-xs'>
-            <div className='px-4 py-2 bg-gray-950 text-white rounded-lg shadow-md'>
-              Total: {total}
-            </div>
           </div>
         </div>
       </div>
