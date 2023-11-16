@@ -27,7 +27,7 @@ function Table({
           total={dealerHandTotal}
           isGameOver={isGameOver}
         />
-        <hr className='w-1/2 sm:w-full border-2 border-green-800 rounded-full' />
+        <hr className='w-full border-2 border-green-800 rounded-full' />
         <Player hand={playerHand} total={playerHandTotal} />
         {!isGameOver && (
           <Controls

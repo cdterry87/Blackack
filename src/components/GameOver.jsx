@@ -1,8 +1,8 @@
 function GameOver({ isWinner, statusMessage, endGame }) {
   return (
     <>
-      <div className='w-auto'>
-        <div className='w-full text-white flex flex-col md:flex-row items-center justify-between md:justify-center gap-4 md:gap-8 p-3 bg-green-800 rounded-lg border border-green-950'>
+      <div className='w-full'>
+        <div className='w-full text-white flex flex-col sm:flex-row items-center justify-between gap-4 md:gap-8 p-3 bg-green-800 rounded-lg border border-green-950'>
           <div className='text-sm flex flex-col text-center md:text-left'>
             <strong className='text-lg text-white font-bold uppercase'>
               {statusMessage}
