@@ -2,9 +2,9 @@ function GameOver({ isWinner, statusMessage, endGame }) {
   return (
     <>
       <div className='w-auto'>
-        <div className='w-full flex flex-col md:flex-row items-center justify-between md:justify-center gap-4 md:gap-8 p-3 bg-white rounded-lg'>
+        <div className='w-full text-white flex flex-col md:flex-row items-center justify-between md:justify-center gap-4 md:gap-8 p-3 bg-green-800 rounded-lg border border-green-950'>
           <div className='text-sm flex flex-col text-center md:text-left'>
-            <strong className='text-lg text-green-900 font-bold uppercase'>
+            <strong className='text-lg text-white font-bold uppercase'>
               {statusMessage}
             </strong>
             <span>
@@ -12,10 +12,10 @@ function GameOver({ isWinner, statusMessage, endGame }) {
             </span>
           </div>
           <button
-            className='uppercase bg-gray-900 text-white px-4 py-2 rounded-md hover:bg-gray-950 transition duration-200 ease-in-out'
+            className='uppercase font-bold bg-white text-green-800 px-4 py-2 rounded-md hover:bg-gray-200 hover:text-green-900 transition duration-200 ease-in-out'
             onClick={endGame}
           >
-            End Game
+            Retry
           </button>
         </div>
       </div>
