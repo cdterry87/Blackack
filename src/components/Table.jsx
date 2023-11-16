@@ -1,6 +1,7 @@
 import Controls from 'components/Controls'
 import Dealer from 'components/Dealer'
 import Player from 'components/Player'
+import PlayerDetails from 'components/PlayerDetails'
 import GameOver from 'components/GameOver'
 
 function Table({
@@ -13,11 +14,14 @@ function Table({
   dealCardToPlayer,
   isGameOver,
   isWinner,
-  statusMessage
+  statusMessage,
+  playerWins,
+  playerLosses
 }) {
   return (
     <>
       <div className='w-full flex flex-col gap-6 items-center justify-center'>
+        <PlayerDetails playerWins={playerWins} playerLosses={playerLosses} />
         <Dealer
           hand={dealerHand}
           total={dealerHandTotal}

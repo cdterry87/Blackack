@@ -13,21 +13,29 @@ function App() {
   const [isGameStarted, setIsGameStarted] = useState(false)
   const [isPlayerFinished, setIsPlayerFinished] = useState(false)
   const [isGameOver, setIsGameOver] = useState(false)
-  const [isWinner, setIsWinner] = useState(false)
+  const [isWinner, setIsWinner] = useState(null)
   const [statusMessage, setStatusMessage] = useState('')
   const [playerHand, setPlayerHand] = useState([])
   const [playerHandTotal, setPlayerHandTotal] = useState(0)
   const [dealerHand, setDealerHand] = useState([])
   const [dealerHandTotal, setDealerHandTotal] = useState(0)
   const [gameDeck, setGameDeck] = useState([...deck])
+  const [playerWins, setPlayerWins] = useState(0)
+  const [playerLosses, setPlayerLosses] = useState(0)
 
   const shuffleAndDeal = () => {
     let tempGameDeck = [...gameDeck]
     let tempPlayerHand = []
     let tempDealerHand = []
 
-    // Start the game
+    // Get player wins and losses from local storage
+    let playerWins = localStorage.getItem('playerWins')
+    let playerLosses = localStorage.getItem('playerLosses')
+
+    // Start the game and set wins and losses
     setIsGameStarted(true)
+    setPlayerWins(playerWins)
+    setPlayerLosses(playerLosses)
 
     // Shuffle the deck
     for (let i = 0; i < tempGameDeck.length - 1; i++) {
@@ -114,26 +122,39 @@ function App() {
   }
 
   const calculateHandTotal = hand => {
-    return hand.reduce((total, card) => {
+    // Calculate the hand total without aces
+    let handTotal = hand.reduce((total, card) => {
       if (card.value === 'A') {
-        return total > 10 ? total + 1 : total + 11
+        return total + 0
       } else if (
         card.value === 'J' ||
         card.value === 'Q' ||
         card.value === 'K'
       ) {
         return total + 10
-      } else {
-        return total + parseInt(card.value)
       }
+      return total + parseInt(card.value)
     }, 0)
+
+    // Calculate the hand total with aces
+    hand.forEach(card => {
+      if (card.value === 'A') {
+        if (handTotal + 11 <= 21) {
+          handTotal += 11
+        } else {
+          handTotal += 1
+        }
+      }
+    })
+
+    return handTotal
   }
 
   const endGame = () => {
     setIsGameStarted(false)
     setIsPlayerFinished(false)
     setIsGameOver(false)
-    setIsWinner(false)
+    setIsWinner(null)
     setStatusMessage('')
     setGameDeck([...deck])
     setPlayerHand([])
@@ -142,48 +163,37 @@ function App() {
     setDealerHandTotal(0)
   }
 
+  const declareWinner = (isWinner, statusMessage) => {
+    // Set game over state
+    setIsWinner(isWinner)
+    setStatusMessage(statusMessage)
+    setIsGameOver(true)
+  }
+
+  /**
+   * useEffect for determining if the game is over and who won
+   */
   useEffect(() => {
     if (playerHandTotal && dealerHandTotal) {
       // Check for automatic game ending conditions
       if (playerHandTotal === 21 && playerHand.length === 2) {
-        // Player blackjack
-        setIsWinner(true)
-        setIsGameOver(true)
-        setStatusMessage('PLAYER BLACKJACK!')
+        declareWinner(true, 'PLAYER BLACKJACK!')
       } else if (playerHandTotal > 21) {
-        // Player bust
-        setIsWinner(false)
-        setIsGameOver(true)
-        setStatusMessage('PLAYER BUST!')
-      } else if (dealerHandTotal === 21 && dealerHand.length === 2) {
-        // Dealer blackjack
-        setIsWinner(false)
-        setIsGameOver(true)
-        setStatusMessage('DEALER BLACKJACK!')
+        declareWinner(false, 'PLAYER BUST!')
       }
 
       // Check for manual game ending conditions when player stays
       if (isPlayerFinished) {
         if (playerHandTotal <= 21 && playerHandTotal === dealerHandTotal) {
-          // Tie game
-          setIsWinner(false)
-          setIsGameOver(true)
-          setStatusMessage('TIE GAME!')
+          declareWinner(false, 'TIE GAME!')
+        } else if (dealerHandTotal === 21 && dealerHand.length === 2) {
+          declareWinner(false, 'DEALER BLACKJACK!')
         } else if (dealerHandTotal > 21) {
-          // Dealer bust
-          setIsWinner(true)
-          setIsGameOver(true)
-          setStatusMessage('DEALER BUST!')
+          declareWinner(true, 'DEALER BUST!')
         } else if (playerHandTotal <= 21 && playerHandTotal > dealerHandTotal) {
-          // Player wins
-          setIsWinner(true)
-          setIsGameOver(true)
-          setStatusMessage('PLAYER WINS!')
+          declareWinner(true, 'PLAYER WINS!')
         } else if (dealerHandTotal <= 21 && dealerHandTotal > playerHandTotal) {
-          // Dealer wins
-          setIsWinner(false)
-          setIsGameOver(true)
-          setStatusMessage('DEALER WINS!')
+          declareWinner(false, 'DEALER WINS!')
         }
       }
     }
@@ -194,6 +204,30 @@ function App() {
     dealerHandTotal,
     isPlayerFinished
   ])
+
+  /**
+   * useEffect for saving player wins and losses to localStorage
+   */
+  useEffect(() => {
+    if (isGameOver) {
+      // Get playerWins and playerLosses from localStorage
+      let playerWins = localStorage.getItem('playerWins') ?? 0
+      let playerLosses = localStorage.getItem('playerLosses') ?? 0
+
+      // Increment playerWins or playerLosses depending on if the player won or lost and save in localStorage
+      if (isWinner) {
+        playerWins = parseInt(playerWins) + 1
+        localStorage.setItem('playerWins', playerWins)
+      } else {
+        playerLosses = parseInt(playerLosses) + 1
+        localStorage.setItem('playerLosses', playerLosses)
+      }
+
+      // Set state
+      setPlayerWins(playerWins)
+      setPlayerLosses(playerLosses)
+    }
+  }, [isWinner, isGameOver])
 
   return (
     <>
@@ -212,6 +246,8 @@ function App() {
               isWinner={isWinner}
               statusMessage={statusMessage}
               isGameOver={isGameOver}
+              playerWins={playerWins}
+              playerLosses={playerLosses}
             />
           )}
         </div>
