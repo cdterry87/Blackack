@@ -39,17 +39,14 @@ function App() {
     let tempPlayerHand = []
     let tempDealerHand = []
 
-    // Get player bank, wins, and losses from local storage
+    // Get player wins and losses from local storage
     let playerWins = localStorage.getItem('playerWins') ?? 0
     let playerLosses = localStorage.getItem('playerLosses') ?? 0
-    let playerBank = localStorage.getItem('playerBank') ?? initialPlayerBank
-    playerBank = parseInt(playerBank)
 
-    // Start the game and set player bank, wins, and losses
+    // Start the game and set player wins and losses
     setIsGameStarted(true)
     setPlayerWins(playerWins)
     setPlayerLosses(playerLosses)
-    setPlayerBank(playerBank)
 
     // Shuffle the deck
     for (let i = 0; i < tempGameDeck.length - 1; i++) {
@@ -184,6 +181,15 @@ function App() {
     setStatusMessage(statusMessage)
     setIsGameOver(true)
   }
+
+  /**
+   * useEffect for initial load
+   */
+  useEffect(() => {
+    let playerBank = localStorage.getItem('playerBank') ?? initialPlayerBank
+    playerBank = parseInt(playerBank)
+    setPlayerBank(playerBank)
+  }, [])
 
   /**
    * useEffect for determining if the game is over and who won
