@@ -231,7 +231,7 @@ function App() {
 
   return (
     <>
-      <div className='min-h-screen bg-green-900 flex items-center justify-center'>
+      <div className='min-h-screen bg-green-900 flex justify-center'>
         <div className='w-full sm:w-auto p-4 h-full'>
           {!isGameStarted && <Welcome deal={shuffleAndDeal} />}
           {isGameStarted && (
