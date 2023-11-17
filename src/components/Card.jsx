@@ -16,16 +16,16 @@ function Card({ card, isFaceDown }) {
             </div>
           )}
           {!isFaceDown && suit === 'spades' && (
-            <Spade classes='w-8 h-8 text-blue-600' />
+            <Spade classes='w-8 h-8 text-gray-800 dark:text-blue-400' />
           )}
           {!isFaceDown && suit === 'diamonds' && (
-            <Diamond classes='w-8 h-8 text-red-600' />
+            <Diamond classes='w-8 h-8 text-red-600 dark:text-red-400' />
           )}
           {!isFaceDown && suit === 'clubs' && (
-            <Club classes='w-8 h-8 text-blue-600' />
+            <Club classes='w-8 h-8 text-gray-800 dark:text-blue-400' />
           )}
           {!isFaceDown && suit === 'hearts' && (
-            <Heart classes='w-8 h-8 text-red-600' />
+            <Heart classes='w-8 h-8 text-red-600 dark:text-red-400' />
           )}
           {!isFaceDown && (
             <span className='text-xl md:text-2xl font-bold'>{value}</span>
