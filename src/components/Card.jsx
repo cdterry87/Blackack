@@ -4,7 +4,7 @@ import Heart from 'icons/Heart'
 import Spade from 'icons/Spade'
 
 function Card({ card, isFaceDown }) {
-  const { suit, value } = card
+  const { suit, label } = card
 
   return (
     <>
@@ -28,7 +28,7 @@ function Card({ card, isFaceDown }) {
             <Heart classes='w-8 h-8 text-red-600 dark:text-red-400' />
           )}
           {!isFaceDown && (
-            <span className='text-xl md:text-2xl font-bold'>{value}</span>
+            <span className='text-xl md:text-2xl font-bold'>{label}</span>
           )}
         </div>
       </div>

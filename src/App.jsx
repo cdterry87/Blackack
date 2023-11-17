@@ -133,32 +133,16 @@ function App() {
   }
 
   const calculateHandTotal = hand => {
-    // Calculate the hand total without aces
-    let handTotal = hand.reduce((total, card) => {
-      if (card.value === 'A') {
-        return total + 0
-      } else if (
-        card.value === 'J' ||
-        card.value === 'Q' ||
-        card.value === 'K'
-      ) {
-        return total + 10
-      }
-      return total + parseInt(card.value)
+    let ace
+    let value = hand.reduce((sum, current) => {
+      ace |= current.value === 1
+      sum += current.value
+      return sum
     }, 0)
-
-    // Calculate the hand total with aces
-    hand.forEach(card => {
-      if (card.value === 'A') {
-        if (handTotal + 11 <= 21) {
-          handTotal += 11
-        } else {
-          handTotal += 1
-        }
-      }
-    })
-
-    return handTotal
+    if (ace && value + 10 <= 21) {
+      value += 10
+    }
+    return value
   }
 
   const endGame = () => {

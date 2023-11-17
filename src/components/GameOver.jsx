@@ -3,7 +3,7 @@ function GameOver({ isWinner, statusMessage, endGame }) {
     <>
       <div className='w-full'>
         <div className='w-full text-white flex flex-col sm:flex-row items-center justify-between gap-4 md:gap-8 p-3 bg-green-800 rounded-lg border border-green-950 dark:bg-gray-800 dark:border-gray-700'>
-          <div className='text-sm flex flex-col text-center md:text-left'>
+          <div className='text-sm flex flex-col text-center sm:text-left'>
             <strong className='text-lg text-white font-bold uppercase'>
               {statusMessage}
             </strong>
