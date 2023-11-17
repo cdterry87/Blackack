@@ -16,12 +16,19 @@ function Table({
   isWinner,
   statusMessage,
   playerWins,
-  playerLosses
+  playerLosses,
+  playerBet,
+  playerBank
 }) {
   return (
     <>
       <div className='h-full w-full flex flex-col gap-6 items-center justify-center'>
-        <PlayerDetails playerWins={playerWins} playerLosses={playerLosses} />
+        <PlayerDetails
+          playerWins={playerWins}
+          playerLosses={playerLosses}
+          playerBet={playerBet}
+          playerBank={playerBank}
+        />
         <Dealer
           hand={dealerHand}
           total={dealerHandTotal}

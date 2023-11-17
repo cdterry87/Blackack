@@ -10,6 +10,8 @@ import 'aos/dist/aos.css'
 function App() {
   AOS.init() // Initialize Animations
 
+  const initialPlayerBank = 5000 // Initial player bank amount
+
   const [isGameStarted, setIsGameStarted] = useState(false)
   const [isPlayerFinished, setIsPlayerFinished] = useState(false)
   const [isGameOver, setIsGameOver] = useState(false)
@@ -22,20 +24,31 @@ function App() {
   const [gameDeck, setGameDeck] = useState([...deck])
   const [playerWins, setPlayerWins] = useState(0)
   const [playerLosses, setPlayerLosses] = useState(0)
+  const [playerBank, setPlayerBank] = useState(initialPlayerBank)
+  const [playerBet, setPlayerBet] = useState(0)
+
+  const placeBet = bet => {
+    if (bet > 500) bet = 500
+    if (bet < 50) bet = 50
+    setPlayerBet(bet)
+  }
 
   const shuffleAndDeal = () => {
     let tempGameDeck = [...gameDeck]
     let tempPlayerHand = []
     let tempDealerHand = []
 
-    // Get player wins and losses from local storage
-    let playerWins = localStorage.getItem('playerWins')
-    let playerLosses = localStorage.getItem('playerLosses')
+    // Get player bank, wins, and losses from local storage
+    let playerWins = localStorage.getItem('playerWins') ?? 0
+    let playerLosses = localStorage.getItem('playerLosses') ?? 0
+    let playerBank = localStorage.getItem('playerBank') ?? initialPlayerBank
+    playerBank = parseInt(playerBank)
 
-    // Start the game and set wins and losses
+    // Start the game and set player bank, wins, and losses
     setIsGameStarted(true)
     setPlayerWins(playerWins)
     setPlayerLosses(playerLosses)
+    setPlayerBank(playerBank)
 
     // Shuffle the deck
     for (let i = 0; i < tempGameDeck.length - 1; i++) {
@@ -161,6 +174,7 @@ function App() {
     setDealerHand([])
     setPlayerHandTotal(0)
     setDealerHandTotal(0)
+    setPlayerBet(0)
   }
 
   const declareWinner = (isWinner, statusMessage) => {
@@ -185,7 +199,7 @@ function App() {
       // Check for manual game ending conditions when player stays
       if (isPlayerFinished) {
         if (playerHandTotal <= 21 && playerHandTotal === dealerHandTotal) {
-          declareWinner(false, 'TIE GAME!')
+          declareWinner(null, 'TIE GAME!')
         } else if (dealerHandTotal === 21 && dealerHand.length === 2) {
           declareWinner(false, 'DEALER BLACKJACK!')
         } else if (dealerHandTotal > 21) {
@@ -214,26 +228,50 @@ function App() {
       let playerWins = localStorage.getItem('playerWins') ?? 0
       let playerLosses = localStorage.getItem('playerLosses') ?? 0
 
-      // Increment playerWins or playerLosses depending on if the player won or lost and save in localStorage
-      if (isWinner) {
-        playerWins = parseInt(playerWins) + 1
-        localStorage.setItem('playerWins', playerWins)
-      } else {
-        playerLosses = parseInt(playerLosses) + 1
-        localStorage.setItem('playerLosses', playerLosses)
-      }
+      // Get player bank from local storage
+      let playerBank = localStorage.getItem('playerBank') ?? initialPlayerBank
 
-      // Set state
-      setPlayerWins(playerWins)
-      setPlayerLosses(playerLosses)
+      // If isWinner is null, then it's a tie game so don't update wins or losses or bank
+      if (isWinner !== null) {
+        // If player wins...
+        if (isWinner) {
+          // Increment playerWins
+          playerWins = parseInt(playerWins) + 1
+          localStorage.setItem('playerWins', playerWins)
+
+          // Add playerBet to playerBank
+          playerBank = parseInt(playerBank) + parseInt(playerBet)
+          localStorage.setItem('playerBank', playerBank)
+        } else {
+          // Increment playerLosses
+          playerLosses = parseInt(playerLosses) + 1
+          localStorage.setItem('playerLosses', playerLosses)
+
+          // Subtract playerBet from playerBank
+          playerBank = parseInt(playerBank) - parseInt(playerBet)
+          localStorage.setItem('playerBank', playerBank)
+        }
+
+        // Set state
+        setPlayerWins(playerWins)
+        setPlayerLosses(playerLosses)
+        setPlayerBank(playerBank)
+      }
     }
-  }, [isWinner, isGameOver])
+  }, [isWinner, isGameOver, playerBet])
 
   return (
     <>
       <div className='min-h-screen bg-green-900 flex justify-center'>
         <div className='w-full sm:w-auto p-4 h-full'>
-          {!isGameStarted && <Welcome deal={shuffleAndDeal} />}
+          {!isGameStarted && (
+            <Welcome
+              deal={shuffleAndDeal}
+              playerBank={playerBank}
+              playerBet={playerBet}
+              placeBet={placeBet}
+            />
+          )}
           {isGameStarted && (
             <Table
               playerHand={playerHand}
@@ -248,6 +286,8 @@ function App() {
               isGameOver={isGameOver}
               playerWins={playerWins}
               playerLosses={playerLosses}
+              playerBet={playerBet}
+              playerBank={playerBank}
             />
           )}
         </div>

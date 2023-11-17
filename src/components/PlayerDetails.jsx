@@ -1,4 +1,4 @@
-function PlayerDetails({ playerWins, playerLosses }) {
+function PlayerDetails({ playerWins, playerLosses, playerBet, playerBank }) {
   let displayPlayerWins = playerWins ?? 0
   let displayPlayerLosses = playerLosses ?? 0
   displayPlayerWins = parseInt(displayPlayerWins)
@@ -21,6 +21,23 @@ function PlayerDetails({ playerWins, playerLosses }) {
             <span>Wins: {displayPlayerWins}</span>
             <span>Losses: {displayPlayerLosses}</span>
             <span>Ratio: {playerWinRatio}</span>
+          </div>
+          <hr />
+          <div className='flex items-center justify-between gap-6 text-xs'>
+            <span>
+              Bank:{' '}
+              {playerBank.toLocaleString('en-US', {
+                style: 'currency',
+                currency: 'USD'
+              })}
+            </span>
+            <span>
+              Bet:{' '}
+              {playerBet.toLocaleString('en-US', {
+                style: 'currency',
+                currency: 'USD'
+              })}
+            </span>
           </div>
         </div>
       </div>
