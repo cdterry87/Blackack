@@ -20,7 +20,7 @@ function Table({
 }) {
   return (
     <>
-      <div className='min-h-screen w-full flex flex-col gap-6 items-center justify-between'>
+      <div className='h-full w-full flex flex-col gap-6 items-center justify-center'>
         <PlayerDetails playerWins={playerWins} playerLosses={playerLosses} />
         <Dealer
           hand={dealerHand}
