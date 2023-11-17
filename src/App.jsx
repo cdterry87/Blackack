@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 
 import Table from 'components/Table'
 import Welcome from 'components/Welcome'
+import ThemeSwitcher from 'components/ThemeSwitcher'
 import deck from 'data/deck.json'
 
 import AOS from 'aos'
@@ -262,8 +263,11 @@ function App() {
 
   return (
     <>
-      <div className='min-h-screen bg-green-900 flex justify-center'>
-        <div className='w-full sm:w-auto p-4 h-full'>
+      <div className='min-h-screen bg-green-900 flex justify-center dark:bg-gray-900'>
+        <div className='w-full md:w-1/2 p-4 h-full'>
+          <div className='w-full flex items-center justify-end'>
+            <ThemeSwitcher />
+          </div>
           {!isGameStarted && (
             <Welcome
               deal={shuffleAndDeal}
