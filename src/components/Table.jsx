@@ -29,20 +29,22 @@ function Table({
         />
         <hr className='w-full border-2 border-green-800 rounded-full' />
         <Player hand={playerHand} total={playerHandTotal} />
-        {!isGameOver && (
-          <Controls
-            hit={dealCardToPlayer}
-            stay={dealCardsToDealer}
-            exit={endGame}
-          />
-        )}
-        {isGameOver && (
-          <GameOver
-            isWinner={isWinner}
-            statusMessage={statusMessage}
-            endGame={endGame}
-          />
-        )}
+        <div className='w-full pt-8'>
+          {!isGameOver && (
+            <Controls
+              hit={dealCardToPlayer}
+              stay={dealCardsToDealer}
+              exit={endGame}
+            />
+          )}
+          {isGameOver && (
+            <GameOver
+              isWinner={isWinner}
+              statusMessage={statusMessage}
+              endGame={endGame}
+            />
+          )}
+        </div>
       </div>
     </>
   )
