@@ -18,7 +18,8 @@ function Table({
   playerWins,
   playerLosses,
   playerBet,
-  playerBank
+  playerBank,
+  playerViewTotals
 }) {
   return (
     <>
@@ -33,9 +34,14 @@ function Table({
           hand={dealerHand}
           total={dealerHandTotal}
           isGameOver={isGameOver}
+          playerViewTotals={playerViewTotals}
         />
         <hr className='w-full border-2 border-green-800 rounded-full dark:border-blue-950' />
-        <Player hand={playerHand} total={playerHandTotal} />
+        <Player
+          hand={playerHand}
+          total={playerHandTotal}
+          playerViewTotals={playerViewTotals}
+        />
         <div className='w-full'>
           {!isGameOver && (
             <Controls

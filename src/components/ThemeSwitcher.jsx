@@ -16,7 +16,6 @@ function ThemeSwitcher() {
   return (
     <>
       <DarkModeSwitch
-        style={{ marginBottom: '1rem' }}
         checked={darkTheme}
         onChange={toggleDarkMode}
         size={24}

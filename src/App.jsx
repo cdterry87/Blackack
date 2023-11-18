@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react'
 import Table from 'components/Table'
 import Welcome from 'components/Welcome'
 import ThemeSwitcher from 'components/ThemeSwitcher'
+import ViewSwitcher from 'components/ViewSwitcher'
 import deck from 'data/deck.json'
 
 import AOS from 'aos'
@@ -27,6 +28,7 @@ function App() {
   const [playerLosses, setPlayerLosses] = useState(0)
   const [playerBank, setPlayerBank] = useState(initialPlayerBank)
   const [playerBet, setPlayerBet] = useState(0)
+  const [playerViewTotals, setPlayerViewTotals] = useState('')
 
   const placeBet = bet => {
     if (bet > 500) bet = 500
@@ -39,14 +41,8 @@ function App() {
     let tempPlayerHand = []
     let tempDealerHand = []
 
-    // Get player wins and losses from local storage
-    let playerWins = localStorage.getItem('playerWins') ?? 0
-    let playerLosses = localStorage.getItem('playerLosses') ?? 0
-
     // Start the game and set player wins and losses
     setIsGameStarted(true)
-    setPlayerWins(playerWins)
-    setPlayerLosses(playerLosses)
 
     // Shuffle the deck
     for (let i = 0; i < tempGameDeck.length - 1; i++) {
@@ -166,13 +162,37 @@ function App() {
     setIsGameOver(true)
   }
 
+  const changePlayerView = () => {
+    let viewTotals = !playerViewTotals
+    console.log('change view', viewTotals)
+
+    setPlayerViewTotals(viewTotals)
+
+    if (viewTotals === true) viewTotals = 'true'
+    if (viewTotals === false) viewTotals = 'false'
+    localStorage.setItem('playerViewTotals', viewTotals)
+  }
+
   /**
    * useEffect for initial load
    */
   useEffect(() => {
+    // Get player bank from local storage and set state
     let playerBank = localStorage.getItem('playerBank') ?? initialPlayerBank
     playerBank = parseInt(playerBank)
     setPlayerBank(playerBank)
+
+    // Get player wins and losses from local storage and set state
+    let playerWins = localStorage.getItem('playerWins') ?? 0
+    let playerLosses = localStorage.getItem('playerLosses') ?? 0
+    setPlayerWins(playerWins)
+    setPlayerLosses(playerLosses)
+
+    // Get player view preference from local storage and set state
+    let playerViewTotals = localStorage.getItem('playerViewTotals') ?? false
+    if (playerViewTotals === 'true') playerViewTotals = true
+    if (playerViewTotals === 'false') playerViewTotals = false
+    setPlayerViewTotals(playerViewTotals)
   }, [])
 
   /**
@@ -255,8 +275,12 @@ function App() {
     <>
       <div className='min-h-screen bg-green-900 flex justify-center dark:bg-gray-900'>
         <div className='w-full md:w-1/2 p-4 h-full'>
-          <div className='w-full flex items-center justify-end'>
+          <div className='w-full flex items-center justify-end gap-2 mb-2'>
             <ThemeSwitcher />
+            <ViewSwitcher
+              playerViewTotals={playerViewTotals}
+              changePlayerView={changePlayerView}
+            />
           </div>
           {!isGameStarted && (
             <Welcome
@@ -282,6 +306,7 @@ function App() {
               playerLosses={playerLosses}
               playerBet={playerBet}
               playerBank={playerBank}
+              playerViewTotals={playerViewTotals}
             />
           )}
         </div>
