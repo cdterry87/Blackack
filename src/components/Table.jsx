@@ -10,8 +10,8 @@ function Table({
   dealerHand,
   playerHandTotal,
   dealerHandTotal,
-  dealCardsToDealer,
-  dealCardToPlayer,
+  stay,
+  hit,
   isGameOver,
   isWinner,
   statusMessage,
@@ -43,13 +43,7 @@ function Table({
           playerViewTotals={playerViewTotals}
         />
         <div className='w-full'>
-          {!isGameOver && (
-            <Controls
-              hit={dealCardToPlayer}
-              stay={dealCardsToDealer}
-              exit={endGame}
-            />
-          )}
+          {!isGameOver && <Controls hit={hit} stay={stay} exit={endGame} />}
           {isGameOver && (
             <GameOver
               isWinner={isWinner}

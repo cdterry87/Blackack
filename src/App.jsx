@@ -4,6 +4,9 @@ import Table from 'components/Table'
 import Welcome from 'components/Welcome'
 import ThemeSwitcher from 'components/ThemeSwitcher'
 import ViewSwitcher from 'components/ViewSwitcher'
+
+import { shuffleAndDeal, dealCardToPlayer, dealCardsToDealer } from 'utils/game'
+
 import deck from 'data/deck.json'
 
 import AOS from 'aos'
@@ -36,109 +39,47 @@ function App() {
     setPlayerBet(bet)
   }
 
-  const shuffleAndDeal = () => {
-    let tempGameDeck = [...gameDeck]
-    let tempPlayerHand = []
-    let tempDealerHand = []
-
-    // Start the game and set player wins and losses
-    setIsGameStarted(true)
-
-    // Shuffle the deck
-    for (let i = 0; i < tempGameDeck.length - 1; i++) {
-      let j = i + Math.floor(Math.random() * (tempGameDeck.length - i))
-      let temp = tempGameDeck[j]
-      tempGameDeck[j] = tempGameDeck[i]
-      tempGameDeck[i] = temp
-    }
-
-    // Add the first card to player's hand and then remove it from the deck
-    tempPlayerHand.push(tempGameDeck[0])
-    tempGameDeck = [...tempGameDeck.filter((card, index) => index !== 0)]
-
-    // Add the second card to the dealer's hand and then remove it from the deck
-    tempDealerHand.push(tempGameDeck[0])
-    tempGameDeck = [...tempGameDeck.filter((card, index) => index !== 0)]
-
-    // Add the third card to player's hand and then remove it from the deck
-    tempPlayerHand.push(tempGameDeck[0])
-    tempGameDeck = [...tempGameDeck.filter((card, index) => index !== 0)]
-
-    // Add the fourth card to the dealer's hand and then remove it from the deck
-    tempDealerHand.push(tempGameDeck[0])
-    tempGameDeck = [...tempGameDeck.filter((card, index) => index !== 0)]
-
-    // Calculate the player's hand total
-    let tempPlayerHandTotal = calculateHandTotal(tempPlayerHand)
-
-    // Calculate the dealer's hand total
-    let tempDealerHandTotal = calculateHandTotal(tempDealerHand)
+  const startGame = () => {
+    const {
+      uGameDeck,
+      uPlayerHand,
+      uDealerHand,
+      uPlayerHandTotal,
+      uDealerHandTotal
+    } = shuffleAndDeal(gameDeck)
 
     // Set the state
-    setGameDeck(tempGameDeck)
-    setPlayerHand(tempPlayerHand)
-    setDealerHand(tempDealerHand)
-    setPlayerHandTotal(tempPlayerHandTotal)
-    setDealerHandTotal(tempDealerHandTotal)
+    setIsGameStarted(true)
+    setGameDeck(uGameDeck)
+    setPlayerHand(uPlayerHand)
+    setDealerHand(uDealerHand)
+    setPlayerHandTotal(uPlayerHandTotal)
+    setDealerHandTotal(uDealerHandTotal)
   }
 
-  const dealCardToPlayer = () => {
-    let tempGameDeck = [...gameDeck]
-    let tempPlayerHand = [...playerHand]
-
-    // Add the first card to player's hand
-    tempPlayerHand.push(tempGameDeck[0])
-
-    // Calculate the player's hand total
-    let tempHandTotal = calculateHandTotal(tempPlayerHand)
+  const hit = () => {
+    const { uGameDeck, uPlayerHand, uHandTotal } = dealCardToPlayer(
+      gameDeck,
+      playerHand
+    )
 
     // Set state
-    setPlayerHand(tempPlayerHand)
-    setGameDeck(gameDeck => [...gameDeck.filter((card, index) => index !== 0)])
-    setPlayerHandTotal(tempHandTotal)
+    setPlayerHand(uPlayerHand)
+    setGameDeck(gameDeck => uGameDeck)
+    setPlayerHandTotal(uHandTotal)
   }
 
-  const dealCardsToDealer = () => {
-    let tempGameDeck = [...gameDeck]
-    let tempDealerHand = [...dealerHand]
-    let tempHandTotal = calculateHandTotal(tempDealerHand)
-    let dealerHitCount = 0
+  const stay = () => {
+    const { uGameDeck, uDealerHand, uHandTotal } = dealCardsToDealer(
+      gameDeck,
+      dealerHand
+    )
 
-    // Player is finished with their turn
+    // Set state
     setIsPlayerFinished(true)
-
-    // Dealer must hit until they reach 17, so keep dealing the first card
-    // and removing it from the deck until the dealer's hand total is 17 or greater
-    while (tempHandTotal < 17) {
-      // This should never happen, but in order to prevent an infinite loop break out if
-      // the dealer hits more than 10 times since this shouldn't be possible without busting
-      if (dealerHitCount > 10) break
-
-      tempDealerHand.push(tempGameDeck[0])
-      tempGameDeck = [...tempGameDeck.filter((card, index) => index !== 0)]
-      tempHandTotal = calculateHandTotal(tempDealerHand)
-
-      // Counts the number of times the dealer hits
-      dealerHitCount++
-    }
-
-    // Set state
-    setDealerHand(tempDealerHand)
-    setGameDeck(gameDeck => [...gameDeck.filter((card, index) => index !== 0)])
-    setDealerHandTotal(tempHandTotal)
-  }
-
-  const calculateHandTotal = hand => {
-    let ace
-    let value = hand.reduce((sum, current) => {
-      ace |= current.value === 1
-      sum += current.value
-      return sum
-    }, 0)
-    if (ace && value + 10 <= 21) {
-      value += 10
-    }
-    return value
+    setDealerHand(uDealerHand)
+    setGameDeck(gameDeck => uGameDeck)
+    setDealerHandTotal(uHandTotal)
   }
 
   const endGame = () => {
@@ -283,7 +224,7 @@ function App() {
           </div>
           {!isGameStarted && (
             <Welcome
-              deal={shuffleAndDeal}
+              startGame={startGame}
               playerBank={playerBank}
               playerBet={playerBet}
               placeBet={placeBet}
@@ -295,8 +236,8 @@ function App() {
               dealerHand={dealerHand}
               playerHandTotal={playerHandTotal}
               dealerHandTotal={dealerHandTotal}
-              dealCardsToDealer={dealCardsToDealer}
-              dealCardToPlayer={dealCardToPlayer}
+              stay={stay}
+              hit={hit}
               endGame={endGame}
               isWinner={isWinner}
               statusMessage={statusMessage}

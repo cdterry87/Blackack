@@ -1,7 +1,7 @@
 // import Spade from 'assets/images/spade.png'
 import Spade from 'icons/Spade'
 
-function Welcome({ deal, playerBank, playerBet, placeBet }) {
+function Welcome({ startGame, playerBank, playerBet, placeBet }) {
   return (
     <>
       <div
@@ -86,7 +86,7 @@ function Welcome({ deal, playerBank, playerBet, placeBet }) {
           </div>
           <button
             className='px-4 py-2 uppercase bg-green-900 text-white font-bold rounded-lg shadow-md hover:bg-green-950 transition duration-200 ease-in-out disabled:bg-gray-300 disabled:text-gray-500 disabled:cursor-not-allowed dark:bg-blue-800'
-            onClick={deal}
+            onClick={startGame}
             disabled={playerBet ? false : true}
           >
             Deal!
