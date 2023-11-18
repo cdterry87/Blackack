@@ -164,7 +164,6 @@ function App() {
 
   const changePlayerView = () => {
     let viewTotals = !playerViewTotals
-    console.log('change view', viewTotals)
 
     setPlayerViewTotals(viewTotals)
 
@@ -189,7 +188,7 @@ function App() {
     setPlayerLosses(playerLosses)
 
     // Get player view preference from local storage and set state
-    let playerViewTotals = localStorage.getItem('playerViewTotals') ?? false
+    let playerViewTotals = localStorage.getItem('playerViewTotals') ?? true
     if (playerViewTotals === 'true') playerViewTotals = true
     if (playerViewTotals === 'false') playerViewTotals = false
     setPlayerViewTotals(playerViewTotals)
