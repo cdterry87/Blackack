@@ -249,6 +249,19 @@ function App() {
               playerViewTotals={playerViewTotals}
             />
           )}
+          <div className='flex flex-col items-center justify-center gap-1 my-8 text-xs text-white'>
+            <span>&copy; 2023. Developed by Chase Terry</span>
+            <a
+              href='https://chaseterry.com/'
+              aria-label='Visit my website!'
+              title='Visit my website!'
+              className='underline'
+              target='_blank'
+              rel='noreferrer'
+            >
+              https://chaseterry.com
+            </a>
+          </div>
         </div>
       </div>
     </>
